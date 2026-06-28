@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model DeliveryZone {
+  id               String     @id @default(uuid())
+  province         String     @unique
+  fee              Decimal    @db.Decimal(10, 2)
+  estimatedDaysMin Int
+  estimatedDaysMax Int
+  active           Boolean    @default(true)
+  deliveries       Delivery[]
+
+  @@map("delivery_zones")
+}
+
+enum DeliveryStatus {
+  PENDING
+  PROCESSING
+  PICKED_UP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  FAILED
+  RETURNED
+}
+
+model Delivery {
+  id                String         @id @default(uuid())
+  orderId           String         @unique
+  orderNumber       String
+  userId            String
+  recipientName     String
+  recipientPhone    String
+  province          String
+  district          String
+  address           String
+  postalCode        String?
+  zoneId            String
+  zone              DeliveryZone   @relation(fields: [zoneId], references: [id])
+  courier           String         @default("manual")
+  trackingCode      String         @unique
+  status            DeliveryStatus @default(PENDING)
+  estimatedDelivery DateTime?      @db.Date
+  deliveredAt       DateTime?
+  notes             String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  events            DeliveryEvent[]
+
+  @@map("deliveries")
+}
+
+model DeliveryEvent {
+  id          String         @id @default(uuid())
+  deliveryId  String
+  delivery    Delivery       @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  status      DeliveryStatus
+  description String?
+  location    String?
+  createdBy   String         @default("system")
+  createdAt   DateTime       @default(now())
+
+  @@map("delivery_events")
+}

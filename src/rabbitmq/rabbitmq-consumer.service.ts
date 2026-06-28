@@ -66,7 +66,10 @@ export class RabbitMQConsumerService implements OnModuleInit {
       postalCode?: string;
     };
   }) {
-    const hasPhysical = payload.items.some((i) => (i.type ?? i.bookType) === 'PHYSICAL');
+    const hasPhysical = payload.items.some((i) => {
+      const t = i.type ?? i.bookType;
+      return t === 'PHYSICAL' || t === 'BOTH';
+    });
     if (!hasPhysical || !payload.deliveryAddress) return;
 
     const addr = payload.deliveryAddress;

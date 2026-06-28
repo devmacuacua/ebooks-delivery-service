@@ -43,11 +43,11 @@ export class DeliveryController {
     @Req() req,
     @Query('status') status?: DeliveryStatus,
     @Query('province') province?: string,
-    @Query('page') page = 1,
-    @Query('limit') limit = 20,
+    @Query('page') page = 0,
+    @Query('size') size = 20,
   ) {
     this.requireAdmin(req);
-    return this.deliveryService.adminList(status, province, +page, +limit);
+    return this.deliveryService.adminList(status, province, +page, +size);
   }
 
   @Get('admin/summary')

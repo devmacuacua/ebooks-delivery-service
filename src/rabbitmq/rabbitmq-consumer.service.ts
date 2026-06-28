@@ -56,17 +56,17 @@ export class RabbitMQConsumerService implements OnModuleInit {
     orderId: string;
     orderNumber: string;
     userId: string;
-    items: Array<{ type: string }>;
+    items: Array<{ type?: string; bookType?: string }>;
     deliveryAddress?: {
       recipientName: string;
-      recipientPhone: string;
+      recipientPhone?: string;
       province: string;
       district: string;
       address: string;
       postalCode?: string;
     };
   }) {
-    const hasPhysical = payload.items.some((i) => i.type === 'PHYSICAL');
+    const hasPhysical = payload.items.some((i) => (i.type ?? i.bookType) === 'PHYSICAL');
     if (!hasPhysical || !payload.deliveryAddress) return;
 
     const addr = payload.deliveryAddress;

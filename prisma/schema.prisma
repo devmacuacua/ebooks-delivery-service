@@ -35,7 +35,7 @@ model Delivery {
   orderNumber       String
   userId            String
   recipientName     String
-  recipientPhone    String
+  recipientPhone    String?
   province          String
   district          String
   address           String

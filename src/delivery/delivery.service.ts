@@ -17,7 +17,7 @@ export class DeliveryService {
     orderNumber: string;
     userId: string;
     recipientName: string;
-    recipientPhone: string;
+    recipientPhone?: string;
     province: string;
     district: string;
     address: string;
@@ -107,24 +107,32 @@ export class DeliveryService {
     return updated;
   }
 
-  async adminList(status?: DeliveryStatus, province?: string, page = 1, limit = 20) {
+  async adminList(status?: DeliveryStatus, province?: string, page = 0, size = 20) {
     const where: any = {};
     if (status) where.status = status;
     if (province) where.province = { contains: province, mode: 'insensitive' };
 
-    const skip = (page - 1) * limit;
+    const skip = page * size;
     const [items, total] = await Promise.all([
       this.prisma.delivery.findMany({
         where,
         include: { zone: { select: { province: true } } },
         orderBy: { createdAt: 'desc' },
         skip,
-        take: limit,
+        take: size,
       }),
       this.prisma.delivery.count({ where }),
     ]);
 
-    return { items, total, page, limit };
+    const totalPages = Math.ceil(total / size);
+    return {
+      content: items,
+      totalElements: total,
+      totalPages,
+      page,
+      size,
+      last: page >= totalPages - 1,
+    };
   }
 
   async summary() {

@@ -8,5 +8,6 @@
     "strictNullChecks": false,"noImplicitAny": false,
     "strictBindCallApply": false,"forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
-  }
+  },
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.e2e-spec.ts", "test"]
 }

@@ -107,6 +107,20 @@ export class DeliveryService {
     return updated;
   }
 
+  async getFee(province: string) {
+    const zone = await this.zoneService.findByProvince(province);
+    return {
+      province: zone.province,
+      fee: zone.fee,
+      estimatedDaysMin: zone.estimatedDaysMin,
+      estimatedDaysMax: zone.estimatedDaysMax,
+    };
+  }
+
+  async getZones() {
+    return this.zoneService.findAll();
+  }
+
   async adminList(status?: DeliveryStatus, province?: string, page = 0, size = 20) {
     const where: any = {};
     if (status) where.status = status;

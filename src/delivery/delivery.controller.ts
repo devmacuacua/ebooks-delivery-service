@@ -16,6 +16,16 @@ export class DeliveryController {
 
   // ─── Customer endpoints ──────────────────────────────────────────────────────
 
+  @Get('fee')
+  async getFee(@Query('province') province: string) {
+    return this.deliveryService.getFee(province);
+  }
+
+  @Get('zones')
+  async getZones() {
+    return this.deliveryService.getZones();
+  }
+
   @Get('track/:trackingCode')
   track(@Param('trackingCode') trackingCode: string) {
     return this.deliveryService.findByTracking(trackingCode);
